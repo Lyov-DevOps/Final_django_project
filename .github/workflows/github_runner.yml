@@ -1,8 +1,7 @@
 name: CI-CD 
-#test
 on: 
   push:
-    branches: [ "DEV" ]
+    branches: [ "master" ]
 
 env:
   AWS_DEFAULT_REGION: us-east-1
@@ -36,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: CI
     steps:
-    #test
+
       - name: Git clone 
         uses: actions/checkout@v3
 
