@@ -1,0 +1,57 @@
+name: CI-CD 
+
+on: 
+  push:
+    branches: [ "DEV" ]
+
+env:
+  AWS_DEFAULT_REGION: us-east-1
+  IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/django_project
+  IMAGE_TAG: ${{ github.sha }}
+  SQL_HOST: ${{ secrets.SQL_HOST }}
+  SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest 
+    steps:
+
+      - name: Git clone
+        uses: actions/checkout@v3
+     
+      - name: Login to Dockerhub 
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+  
+      # Build and Push container to DockerHub
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
+        
+  CD:
+    runs-on: ubuntu-latest
+    needs: CI
+    steps:
+    
+      - name: Git clone 
+        uses: actions/checkout@v3
+
+      - name: Make deployment file
+        run: |
+          envsubst < djangoproject.yaml > new_djangoproject.yaml
+          cat new_djangoproject.yaml
+      - name: AWS Configure
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Deploy djangoproject to aws eks cluster
+        run: |
+          aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }}             
+          kubectl apply -f new_djangoproject.yaml
