@@ -2,7 +2,9 @@ name: CI-CD
 on: 
   push:
     branches: [ "master" ]
-
+    paths-ignore:
+    - 'README.md'
+    - 'README.rst'
 env:
   AWS_DEFAULT_REGION: us-east-1
   IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/django_project
