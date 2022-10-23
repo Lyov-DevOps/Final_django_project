@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: djangoproject      
+  name: MY_djangoproject      
 
 ---
 
@@ -15,7 +15,7 @@ metadata:
   name: djangoproject
   namespace: djangoproject
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: djangoproject
@@ -64,7 +64,7 @@ metadata:
   labels: 
     name: djangoproject
   name: djangoproject
-  namespace: djangoproject
+  namespace: MY_djangoproject
 spec:
   ports:
   - port: 8000
