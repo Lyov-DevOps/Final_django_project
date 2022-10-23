@@ -7,7 +7,7 @@ on:
     - 'README.rst'
 env:
   AWS_DEFAULT_REGION: us-east-1
-  IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/django_project
+  IMAGE: levdevops/django_project
   IMAGE_TAG: ${{ github.sha }}
   SQL_HOST: ${{ secrets.SQL_HOST }}
   SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
