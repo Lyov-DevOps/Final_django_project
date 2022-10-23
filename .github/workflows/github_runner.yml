@@ -43,7 +43,7 @@ jobs:
 
       - name: Make deployment file
         run: |
-          envsubst < djangoproject.yaml > EKS_djangoproject.yaml
+          envsubst < djangoproject.yaml > eks_djangoproject.yaml
           cat new_djangoproject.yaml
       - name: AWS Configure
         uses: aws-actions/configure-aws-credentials@v1
@@ -57,4 +57,4 @@ jobs:
           aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }}             
           kubectl create namespace djangoproject || true
           kubectl create secret --namespace=djangoproject docker-registry regcred --docker-server=docker.io --docker-username=${{ secrets.DOCKERHUB_USERNAME }} --docker-password=${{ secrets.DOCKERHUB_PASSWORD }} || true
-          kubectl apply -f EKS_djangoproject.yaml
+          kubectl apply -f eks_djangoproject.yaml
