@@ -6,6 +6,10 @@ metadata:
   name: djangoproject      
 
 ---
+apiVersion: v2
+kind: Namespace
+metadata:
+  name: monitoring      
 
 apiVersion: apps/v1
 kind: Deployment
@@ -111,7 +115,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: default
-  namespace: monitoring
+  namespace: djangoproject
 ---
 
 apiVersion: apps/v1
