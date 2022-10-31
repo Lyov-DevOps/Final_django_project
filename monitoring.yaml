@@ -1,3 +1,11 @@
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring  
+
+
 
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -20,7 +28,7 @@ rules:
 - nonResourceURLs: ["/metrics"]
   verbs: ["get"]
 ---
-#monitoring part
+
 
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -33,14 +41,14 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: default
-  namespace: djangoproject
+  namespace: monitoring
 ---
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: prometheus-deployment
-  namespace: djangoproject
+  namespace: monitoring
   labels:
     app: prometheus-server
 spec:
@@ -89,7 +97,7 @@ metadata:
   name: prometheus-server-conf
   labels:
     name: prometheus-server-conf
-  namespace: djangoproject
+  namespace: monitoring
 data:
   prometheus.rules: |-
     groups:
@@ -249,7 +257,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: grafana-datasources
-  namespace: djangoproject
+  namespace: monitoring
 data:
   prometheus.yaml: |-
     {
@@ -272,7 +280,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: grafana
-  namespace: djangoproject
+  namespace: monitoring
 spec:
   replicas: 1
   selector:
@@ -316,7 +324,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: grafana
-  namespace: djangoproject
+  namespace: monitoring
   annotations:
       prometheus.io/scrape: 'true'
       prometheus.io/port:   '3000'
@@ -336,7 +344,7 @@ metadata:
     app.kubernetes.io/component: exporter
     app.kubernetes.io/name: node-exporter
   name: node-exporter
-  namespace: djangoproject
+  namespace: monitoring
 spec:
   selector:
     matchLabels:
