@@ -1,1 +1,0 @@
-# Final_django_project
