@@ -6,50 +6,47 @@ on:
     paths-ignore:
     - 'README.md'
     - 'README.rst'
-# env:
-#   AWS_DEFAULT_REGION: us-east-1
-#   IMAGE: levdevops/django_project
-#   IMAGE_TAG: ${{ github.sha }}
+env:
+  AWS_DEFAULT_REGION: us-east-1
+  IMAGE: levdevops/monitoring
+  IMAGE_TAG: ${{ github.sha }}
 #   SQL_HOST: ${{ secrets.SQL_HOST }}
 #   SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
 
 jobs:
-#   CI:
-#     runs-on: ubuntu-latest
-#     steps:
+  CI:
+    runs-on: ubuntu-latest
+    steps:
 
-#       - name: Git clone
-#         uses: actions/checkout@v3
+      - name: Git clone
+        uses: actions/checkout@v3
      
-#       - name: Login to Dockerhub 
-#         uses: docker/login-action@v2
-#         with:
-#           username: ${{ secrets.DOCKERHUB_USERNAME }}
-#           password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Login to Dockerhub 
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
   
-#      # Build and Push container to DockerHub
-#       - name: Build and push
-#         uses: docker/build-push-action@v3
-#         with:
-#           push: true
-#           tags: ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
+     # Build and Push container to DockerHub
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
         
   CD:
     runs-on: ubuntu-latest
   
     steps:
 
-#       - name: Git clone 
-#         uses: actions/checkout@v3
+      - name: Git clone 
+        uses: actions/checkout@v3
 
-#       - name: Make deployment file
-#         run: |
-#           envsubst < djangoproject.yaml > eks_djangoproject.yaml
-#           cat eks_djangoproject.yaml
-#       - name: Make monitoring deployment file
-#         run: |
-#           envsubst < monitoring.yaml > mon_djangoproject.yaml
-#           cat mon_djangoproject.yaml
+      
+      - name: Make monitoring deployment file
+        run: |
+          envsubst < monitoring.yaml > mon_monitoring.yaml
+          cat mon_monitoring.yaml
       - name: AWS Configure
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -57,13 +54,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
-#       - name: Deploy djangoproject to aws eks cluster
-#         run: |
-#           aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }}             
-#           kubectl apply -f eks_djangoproject.yaml
+#       
       
       - name: Deploy monitoring deployment to aws eks cluster
         run: |
           aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }}             
-          kubectl apply -f monitoring.yaml
+          kubectl apply -f mon_monitoring.yaml
    
