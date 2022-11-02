@@ -15,7 +15,7 @@ env:
 
 jobs:
   CI:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
 
       - name: Git clone
@@ -35,7 +35,7 @@ jobs:
           tags: ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
         
   CD:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: CI
     steps:
 
